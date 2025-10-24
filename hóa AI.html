@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thí nghiệm Hóa học</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bubble {
+            0% { transform: translateY(0) scale(0); opacity: 1; }
+            50% { transform: translateY(-20px) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-40px) scale(0); opacity: 0; }
+        }
+        
+        @keyframes explosion {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.3) rotate(5deg); }
+            50% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(3deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        @keyframes dissolve {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 0.3; transform: scale(0.6); }
+        }
+        
+        @keyframes fizz {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-5px) scale(1.1); }
+            50% { transform: translateY(-10px) scale(0.9); }
+            75% { transform: translateY(-3px) scale(1.05); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .bubble-animation {
+            animation: bubble 1s ease-out infinite;
+        }
+        
+        .explosion-animation {
+            animation: explosion 0.8s ease-out infinite;
+        }
+        
+        .dissolve-animation {
+            animation: dissolve 2s ease-out infinite alternate;
+        }
+        
+        .fizz-animation {
+            animation: fizz 0.6s ease-in-out infinite;
+        }
+        
+        .glow-animation {
+            animation: glow 1.5s ease-in-out infinite;
+        }
+        
+        .result-enter {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .substance-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .substance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+    <div class="container mx-auto p-6 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🧪 Thí nghiệm Hóa học</h1>
+            <p class="text-gray-600">Khám phá các phản ứng hóa học thú vị!</p>
+        </div>
+
+        <!-- Experiment Type Selection -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button id="metal-acid-btn" class="experiment-btn bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                ⚡ Kim loại + Axit
+            </button>
+            <button id="fat-ester-btn" class="experiment-btn bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors opacity-50">
+                🧼 Chất béo & Este
+            </button>
+        </div>
+
+        <!-- Experiment Area -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Left Panel - First Substance -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <div class="text-4xl mb-2" id="left-icon">⚗️</div>
+                    <h3 class="text-xl font-semibold text-gray-800" id="left-title">Chọn Kim Loại</h3>
+                </div>
+                <div class="grid grid-cols-1 gap-3" id="left-options">
+                    <button class="substance-btn" data-value="Na" data-type="choice1">
+                        <span class="font-bold">Na</span> - Natri
+                    </button>
+                    <button class="substance-btn" data-value="Zn" data-type="choice1">
+                        <span class="font-bold">Zn</span> - Kẽm
+                    </button>
+                    <button class="substance-btn" data-value="Cu" data-type="choice1">
+                        <span class="font-bold">Cu</span> - Đồng
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Second Substance -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <div class="text-4xl mb-2" id="right-icon">🧪</div>
+                    <h3 class="text-xl font-semibold text-gray-800" id="right-title">Chọn Axit</h3>
+                </div>
+                <div class="grid grid-cols-1 gap-3" id="right-options">
+                    <button class="substance-btn" data-value="HCl" data-type="choice2">
+                        <span class="font-bold">HCl</span> - Axit Clohidric
+                    </button>
+                    <button class="substance-btn" data-value="H2SO4" data-type="choice2">
+                        <span class="font-bold">H₂SO₄</span> - Axit Sunfuric
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experiment Button -->
+        <div class="text-center mb-8">
+            <button id="experiment-btn" class="bg-green-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                🔬 Tiến hành thí nghiệm
+            </button>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-area" class="hidden">
+            <div class="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">🎯 Kết quả thí nghiệm:</h3>
+                <div id="result-content" class="text-lg text-gray-700"></div>
+                <div id="animation-area" class="mt-4 text-center"></div>
+            </div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="text-center mt-6">
+            <button id="reset-btn" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                🔄 Làm lại thí nghiệm
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentExperiment = 'metal-acid';
+        let choice1 = null;
+        let choice2 = null;
+
+        const experiments = {
+            'metal-acid': {
+                leftTitle: 'Chọn Kim Loại',
+                rightTitle: 'Chọn Axit',
+                leftIcon: '⚗️',
+                rightIcon: '🧪',
+                leftOptions: [
+                    { value: 'Na', label: '<span class="font-bold">Na</span> - Natri', color: 'bg-yellow-100' },
+                    { value: 'Zn', label: '<span class="font-bold">Zn</span> - Kẽm', color: 'bg-gray-100' },
+                    { value: 'Cu', label: '<span class="font-bold">Cu</span> - Đồng', color: 'bg-orange-100' }
+                ],
+                rightOptions: [
+                    { value: 'HCl', label: '<span class="font-bold">HCl</span> - Axit Clohidric', color: 'bg-green-100' },
+                    { value: 'H2SO4', label: '<span class="font-bold">H₂SO₄</span> - Axit Sunfuric', color: 'bg-blue-100' }
+                ]
+            },
+            'fat-ester': {
+                leftTitle: 'Chọn Chất béo / Este',
+                rightTitle: 'Chọn Tác nhân',
+                leftIcon: '🧈',
+                rightIcon: '⚗️',
+                leftOptions: [
+                    { value: 'Tristearin', label: '<span class="font-bold">Tristearin</span> - Chất béo no (mỡ động vật)', color: 'bg-red-100' },
+                    { value: 'Triolein', label: '<span class="font-bold">Triolein</span> - Chất béo không no (dầu thực vật)', color: 'bg-green-100' },
+                    { value: 'Tripalmitin', label: '<span class="font-bold">Tripalmitin</span> - Chất béo no (dầu cọ)', color: 'bg-orange-100' },
+                    { value: 'Trilinolein', label: '<span class="font-bold">Trilinolein</span> - Chất béo không no (dầu hướng dương)', color: 'bg-yellow-100' },
+                    { value: 'EthylAcetate', label: '<span class="font-bold">CH₃COOC₂H₅</span> - Etyl axetat (mùi chuối)', color: 'bg-yellow-200' },
+                    { value: 'MethylSalicylate', label: '<span class="font-bold">C₈H₈O₃</span> - Metyl salixylat (dầu gió)', color: 'bg-purple-100' },
+                    { value: 'EthylButyrate', label: '<span class="font-bold">C₃H₇COOC₂H₅</span> - Etyl butyrat (mùi dứa)', color: 'bg-pink-100' },
+                    { value: 'IsoamylAcetate', label: '<span class="font-bold">CH₃COOC₅H₁₁</span> - Isoamyl axetat (mùi chuối chín)', color: 'bg-amber-100' },
+                    { value: 'MethylAnthranilate', label: '<span class="font-bold">C₈H₉NO₃</span> - Metyl anthranilat (mùi nho)', color: 'bg-indigo-100' },
+                    { value: 'EthylCinnamate', label: '<span class="font-bold">C₆H₅CH=CHCOOC₂H₅</span> - Etyl cinnamat (mùi quế)', color: 'bg-rose-100' }
+                ],
+                rightOptions: [
+                    { value: 'NaOH', label: '<span class="font-bold">NaOH</span> - Dung dịch NaOH (xà phòng hóa)', color: 'bg-blue-100' },
+                    { value: 'H2O_acid', label: '<span class="font-bold">H₂O + H⁺</span> - Thủy phân trong môi trường axit', color: 'bg-orange-100' },
+                    { value: 'H2O_base', label: '<span class="font-bold">H₂O + OH⁻</span> - Thủy phân trong môi trường bazơ', color: 'bg-green-100' }
+                ]
+            }
+        };
+
+        function switchExperiment(type) {
+            currentExperiment = type;
+            choice1 = null;
+            choice2 = null;
+            
+            // Update button states
+            document.querySelectorAll('.experiment-btn').forEach(btn => {
+                btn.classList.remove('opacity-50');
+                btn.classList.add('opacity-50');
+            });
+            document.getElementById(`${type}-btn`).classList.remove('opacity-50');
+            
+            // Update panels
+            const exp = experiments[type];
+            document.getElementById('left-title').textContent = exp.leftTitle;
+            document.getElementById('right-title').textContent = exp.rightTitle;
+            document.getElementById('left-icon').textContent = exp.leftIcon;
+            document.getElementById('right-icon').textContent = exp.rightIcon;
+            
+            // Update options
+            updateOptions('left-options', exp.leftOptions, 'choice1');
+            updateOptions('right-options', exp.rightOptions, 'choice2');
+            
+            // Hide result
+            document.getElementById('result-area').classList.add('hidden');
+            updateExperimentButton();
+        }
+
+        function updateOptions(containerId, options, choiceType) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = `substance-btn ${option.color}`;
+                button.setAttribute('data-value', option.value);
+                button.setAttribute('data-type', choiceType);
+                button.innerHTML = option.label;
+                container.appendChild(button);
+            });
+        }
+
+        function updateExperimentButton() {
+            const btn = document.getElementById('experiment-btn');
+            btn.disabled = !choice1 || !choice2;
+        }
+
+        function performExperiment() {
+            if (!choice1 || !choice2) return;
+
+            let result = '';
+            let equation = '';
+            let animation = '';
+
+            if (currentExperiment === 'metal-acid') {
+                if (choice1 === 'Na' && choice2 === 'HCl') {
+                    result = '💥 Phản ứng rất mạnh! Natri tan ngay lập tức, có tiếng nổ, khí H₂ bốc lên và bắt cháy tạo ngọn lửa vàng!';
+                    equation = '2Na + 2HCl → 2NaCl + H₂↑ + nhiệt';
+                    animation = createReactionAnimation(['🟡', '🟢'], ['⚡', '💥', '🔥'], ['🧂', '💨']);
+                } else if (choice1 === 'Na' && choice2 === 'H2SO4') {
+                    result = '💥 Phản ứng cực mạnh và nguy hiểm! Natri tan ngay, có tiếng nổ lớn, khí H₂ bốc lên và bắt cháy!';
+                    equation = '2Na + H₂SO₄ → Na₂SO₄ + H₂↑ + nhiệt';
+                    animation = createReactionAnimation(['🟡', '🔵'], ['⚡', '💥', '🔥'], ['🧂', '💨']);
+                } else if (choice1 === 'Zn' && choice2 === 'HCl') {
+                    result = '✨ Kẽm tan dần, có bọt khí H₂ nhỏ li ti bốc lên đều đặn, dung dịch nóng lên.';
+                    equation = 'Zn + 2HCl → ZnCl₂ + H₂↑';
+                    animation = createReactionAnimation(['⚪', '🟢'], ['💧', '💨'], ['💧', '💨']);
+                } else if (choice1 === 'Zn' && choice2 === 'H2SO4') {
+                    result = '✨ Kẽm tan từ từ, có bọt khí H₂ bốc lên, dung dịch trở nên trong suốt.';
+                    equation = 'Zn + H₂SO₄ → ZnSO₄ + H₂↑';
+                    animation = createReactionAnimation(['⚪', '🔵'], ['💧', '💨'], ['💧', '💨']);
+                } else if (choice1 === 'Cu') {
+                    result = '❌ Không có phản ứng. Đồng không tan trong axit HCl hoặc H₂SO₄ loãng ở nhiệt độ thường.';
+                    equation = 'Không có phản ứng (Cu kém hoạt động)';
+                    animation = '<div class="text-4xl animate-pulse">🔶 ➡️ 🔶</div>';
+                }
+            } else if (currentExperiment === 'fat-ester') {
+                // Chất béo reactions
+                if (choice1 === 'Tristearin' && choice2 === 'NaOH') {
+                    result = '🧼 Xà phòng hóa! Chất béo tan dần, tạo thành xà phòng cứng (natri stearat) và glycerin. Hỗn hợp trở nên đặc và có tính kiềm.';
+                    equation = 'C₅₇H₁₁₀O₆ + 3NaOH → 3C₁₇H₃₅COONa + C₃H₈O₃';
+                    animation = createSoapAnimation();
+                } else if (choice1 === 'Triolein' && choice2 === 'NaOH') {
+                    result = '🧼 Xà phòng hóa! Dầu thực vật tạo thành xà phòng mềm (natri oleat) và glycerin. Sản phẩm có tính kiềm.';
+                    equation = 'C₅₇H₁₀₄O₆ + 3NaOH → 3C₁₇H₃₃COONa + C₃H₈O₃';
+                    animation = createSoapAnimation();
+                } else if (choice1 === 'Tripalmitin' && choice2 === 'NaOH') {
+                    result = '🧼 Xà phòng hóa! Dầu cọ tạo thành xà phòng cứng (natri palmitat) và glycerin. Sản phẩm có màu trắng đục.';
+                    equation = 'C₅₁H₉₈O₆ + 3NaOH → 3C₁₅H₃₁COONa + C₃H₈O₃';
+                    animation = createSoapAnimation();
+                } else if (choice1 === 'Trilinolein' && choice2 === 'NaOH') {
+                    result = '🧼 Xà phòng hóa! Dầu hướng dương tạo thành xà phòng mềm (natri linoleat) và glycerin. Sản phẩm có màu vàng nhạt.';
+                    equation = 'C₅₇H₉₈O₆ + 3NaOH → 3C₁₇H₃₁COONa + C₃H₈O₃';
+                    animation = createSoapAnimation();
+                
+                // Este thơm reactions
+                } else if (choice1 === 'EthylAcetate' && choice2 === 'NaOH') {
+                    result = '💧 Thủy phân bazơ! Mùi chuối biến mất dần, tạo thành natri axetat và etanol.';
+                    equation = 'CH₃COOC₂H₅ + NaOH → CH₃COONa + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🍌', '💧');
+                } else if (choice1 === 'EthylAcetate' && choice2 === 'H2O_acid') {
+                    result = '🍋 Thủy phân axit! Mùi chuối yếu dần, tạo thành axit axetic và etanol.';
+                    equation = 'CH₃COOC₂H₅ + H₂O → CH₃COOH + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🍌', '🍋');
+                } else if (choice1 === 'EthylButyrate' && choice2 === 'NaOH') {
+                    result = '🍍 Thủy phân bazơ! Mùi dứa biến mất, tạo thành natri butyrat và etanol.';
+                    equation = 'C₃H₇COOC₂H₅ + NaOH → C₃H₇COONa + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🍍', '💧');
+                } else if (choice1 === 'EthylButyrate' && choice2 === 'H2O_acid') {
+                    result = '🧈 Thủy phân axit! Mùi dứa yếu dần, tạo thành axit butyric và etanol.';
+                    equation = 'C₃H₇COOC₂H₅ + H₂O → C₃H₇COOH + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🍍', '🧈');
+                } else if (choice1 === 'IsoamylAcetate' && choice2 === 'NaOH') {
+                    result = '🍌 Thủy phân bazơ! Mùi chuối chín biến mất, tạo thành natri axetat và isoamyl alcohol.';
+                    equation = 'CH₃COOC₅H₁₁ + NaOH → CH₃COONa + C₅H₁₁OH';
+                    animation = createHydrolysisAnimation('🍌', '💧');
+                } else if (choice1 === 'IsoamylAcetate' && choice2 === 'H2O_acid') {
+                    result = '🍋 Thủy phân axit! Mùi chuối chín yếu dần, tạo thành axit axetic và isoamyl alcohol.';
+                    equation = 'CH₃COOC₅H₁₁ + H₂O → CH₃COOH + C₅H₁₁OH';
+                    animation = createHydrolysisAnimation('🍌', '🍋');
+                } else if (choice1 === 'MethylAnthranilate' && choice2 === 'NaOH') {
+                    result = '🍇 Thủy phân bazơ! Mùi nho biến mất, tạo thành natri anthranilat và metanol.';
+                    equation = 'C₈H₉NO₃ + NaOH → C₇H₆NO₃Na + CH₃OH';
+                    animation = createHydrolysisAnimation('🍇', '💧');
+                } else if (choice1 === 'MethylAnthranilate' && choice2 === 'H2O_acid') {
+                    result = '💊 Thủy phân axit! Mùi nho yếu dần, tạo thành axit anthranilic và metanol.';
+                    equation = 'C₈H₉NO₃ + H₂O → C₇H₇NO₂ + CH₃OH';
+                    animation = createHydrolysisAnimation('🍇', '💊');
+                } else if (choice1 === 'EthylCinnamate' && choice2 === 'NaOH') {
+                    result = '🌿 Thủy phân bazơ! Mùi quế biến mất, tạo thành natri cinnamat và etanol.';
+                    equation = 'C₆H₅CH=CHCOOC₂H₅ + NaOH → C₆H₅CH=CHCOONa + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🌿', '💧');
+                } else if (choice1 === 'EthylCinnamate' && choice2 === 'H2O_acid') {
+                    result = '🌶️ Thủy phân axit! Mùi quế yếu dần, tạo thành axit cinnamic và etanol.';
+                    equation = 'C₆H₅CH=CHCOOC₂H₅ + H₂O → C₆H₅CH=CHCOOH + C₂H₅OH';
+                    animation = createHydrolysisAnimation('🌿', '🌶️');
+                } else if (choice1 === 'MethylSalicylate' && choice2 === 'NaOH') {
+                    result = '💊 Thủy phân bazơ! Mùi dầu gió biến mất, tạo thành natri salixylat và metanol.';
+                    equation = 'C₈H₈O₃ + NaOH → C₇H₅O₃Na + CH₃OH';
+                    animation = createHydrolysisAnimation('🌿', '💊');
+                } else if (choice1 === 'MethylSalicylate' && choice2 === 'H2O_acid') {
+                    result = '💊 Thủy phân axit! Mùi dầu gió yếu dần, tạo thành axit salixilic và metanol.';
+                    equation = 'C₈H₈O₃ + H₂O → C₇H₆O₃ + CH₃OH';
+                    animation = createHydrolysisAnimation('🌿', '💊');
+                } else {
+                    result = '❓ Phản ứng xảy ra chậm hoặc không rõ ràng trong điều kiện này.';
+                    equation = 'Cần điều kiện phù hợp (nhiệt độ, xúc tác)';
+                    animation = '<div class="text-4xl animate-pulse">🤔</div>';
+                }
+            }
+
+            // Show result with equation
+            document.getElementById('result-content').innerHTML = `
+                <div class="mb-3">${result}</div>
+                <div class="bg-white p-3 rounded-lg border-l-4 border-blue-500">
+                    <strong>Phương trình phản ứng:</strong><br>
+                    <code class="text-lg font-mono">${equation}</code>
+                </div>
+            `;
+            document.getElementById('animation-area').innerHTML = animation;
+            document.getElementById('result-area').classList.remove('hidden');
+            document.getElementById('result-area').classList.add('result-enter');
+        }
+
+        function createReactionAnimation(reactants, process, products) {
+            return `
+                <div class="flex items-center justify-center gap-4 text-3xl">
+                    <div class="flex gap-2">${reactants.map(r => `<span class="animate-bounce">${r}</span>`).join('')}</div>
+                    <span>+</span>
+                    <div class="flex gap-2">${process.map(p => `<span class="animate-ping">${p}</span>`).join('')}</div>
+                    <span>→</span>
+                    <div class="flex gap-2">${products.map(p => `<span class="animate-pulse">${p}</span>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        function createSoapAnimation() {
+            return `
+                <div class="flex items-center justify-center gap-4 text-3xl">
+                    <span class="animate-bounce">🧈</span>
+                    <span>+</span>
+                    <span class="animate-bounce">⚗️</span>
+                    <span class="animate-ping">🔥</span>
+                    <span>→</span>
+                    <span class="animate-pulse">🧼</span>
+                    <span>+</span>
+                    <span class="animate-pulse">🍯</span>
+                </div>
+                <div class="mt-2 text-sm text-gray-600">Chất béo + NaOH → Xà phòng + Glycerin</div>
+            `;
+        }
+
+        function createHydrolysisAnimation(from, to) {
+            return `
+                <div class="flex items-center justify-center gap-4 text-3xl">
+                    <span class="animate-bounce">${from}</span>
+                    <span>+</span>
+                    <span class="animate-bounce">💧</span>
+                    <span class="animate-ping">⚡</span>
+                    <span>→</span>
+                    <span class="animate-pulse">${to}</span>
+                    <span>+</span>
+                    <span class="animate-pulse">🍷</span>
+                </div>
+                <div class="mt-2 text-sm text-gray-600">Este + H₂O → Axit + Ancol</div>
+            `;
+        }
+
+        function resetExperiment() {
+            choice1 = null;
+            choice2 = null;
+            document.querySelectorAll('.substance-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-700');
+            });
+            document.getElementById('result-area').classList.add('hidden');
+            updateExperimentButton();
+        }
+
+        // Event listeners
+        document.getElementById('metal-acid-btn').addEventListener('click', () => switchExperiment('metal-acid'));
+        document.getElementById('fat-ester-btn').addEventListener('click', () => switchExperiment('fat-ester'));
+        document.getElementById('experiment-btn').addEventListener('click', performExperiment);
+        document.getElementById('reset-btn').addEventListener('click', resetExperiment);
+
+        // Substance button clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('substance-btn')) {
+                const value = e.target.getAttribute('data-value');
+                const type = e.target.getAttribute('data-type');
+                
+                // Remove selection from siblings
+                e.target.parentElement.querySelectorAll('.substance-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                });
+                
+                // Add selection to clicked button
+                e.target.classList.remove('bg-gray-100', 'text-gray-700');
+                e.target.classList.add('bg-blue-600', 'text-white');
+                
+                // Update choice
+                if (type === 'choice1') {
+                    choice1 = value;
+                } else {
+                    choice2 = value;
+                }
+                
+                updateExperimentButton();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Style substance buttons
+            const style = document.createElement('style');
+            style.textContent = `
+                .substance-btn {
+                    @apply w-full p-3 rounded-lg border-2 border-gray-200 bg-gray-100 text-gray-700 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer text-left;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            switchExperiment('metal-acid');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97eea738d547933e',t:'MTc1NzgzOTk5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+
+
